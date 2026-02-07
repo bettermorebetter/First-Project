@@ -1,39 +1,53 @@
 // The link to your model provided by Teachable Machine export panel
 const URL = "https://teachablemachine.withgoogle.com/models/MODEL_ID/"; // IMPORTANT: Replace MODEL_ID with your actual model ID
 
-let model, webcam, labelContainer, maxPredictions;
+let model, labelContainer;
+let isModelLoaded = false;
 
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    // load the model and metadata
-    // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-    // or tmImage.loadFromURL() support files from a URL
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        isModelLoaded = true;
+        document.getElementById("classLabel").textContent = "Ready to classify!";
+        document.getElementById("confidence").textContent = "";
+        console.log("Teachable Machine model loaded successfully.");
+    } catch (error) {
+        document.getElementById("classLabel").textContent = "Error loading model.";
+        document.getElementById("confidence").textContent = "Please check console for details and ensure MODEL_ID is correct.";
+        console.error("Failed to load Teachable Machine model:", error);
+    }
 
     labelContainer = document.getElementById("predictionResult");
 }
 
 async function predict() {
-    // predict can take in an image, video or canvas html element
-    const prediction = await model.predict(document.getElementById("uploadedImage"));
-    let classLabel = document.getElementById("classLabel");
-    let confidence = document.getElementById("confidence");
-
-    // Assuming the model outputs probabilities for "Cat Face" and "Dog Face"
-    // You might need to adjust the indices based on your model's output
-    let catPrediction = prediction[0]; // Assuming index 0 is Cat Face
-    let dogPrediction = prediction[1]; // Assuming index 1 is Dog Face
-
-    if (catPrediction.probability > dogPrediction.probability) {
-        classLabel.textContent = catPrediction.className;
-        confidence.textContent = `${(catPrediction.probability * 100).toFixed(2)}%`;
-    } else {
-        classLabel.textContent = dogPrediction.className;
-        confidence.textContent = `${(dogPrediction.probability * 100).toFixed(2)}%`;
+    if (!isModelLoaded) {
+        document.getElementById("classLabel").textContent = "Model not loaded.";
+        document.getElementById("confidence").textContent = "Please wait or check MODEL_ID in predict.js.";
+        return;
     }
+
+    const image = document.getElementById("uploadedImage");
+    if (!image || image.style.display === 'none' || !image.src || image.src.includes('#')) {
+        document.getElementById("classLabel").textContent = "No image uploaded.";
+        document.getElementById("confidence").textContent = "";
+        return;
+    }
+
+    const prediction = await model.predict(image);
+    
+    let topPrediction = { className: "Unknown", probability: 0 };
+    for (let i = 0; i < prediction.length; i++) {
+        if (prediction[i].probability > topPrediction.probability) {
+            topPrediction = prediction[i];
+        }
+    }
+
+    document.getElementById("classLabel").textContent = topPrediction.className;
+    document.getElementById("confidence").textContent = `${(topPrediction.probability * 100).toFixed(2)}%`;
 }
 
 document.getElementById('imageUpload').addEventListener('change', function(event) {
@@ -48,6 +62,10 @@ document.getElementById('imageUpload').addEventListener('change', function(event
             predict();
         };
         reader.readAsDataURL(file);
+    } else {
+        document.getElementById('uploadedImage').style.display = 'none';
+        document.getElementById("classLabel").textContent = "";
+        document.getElementById("confidence").textContent = "";
     }
 });
 
