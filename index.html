@@ -7,20 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Poker Hand Scorer</h1>
-        <div id="hand-container" class="hand-container"></div>
-        <div id="hand-rank-display" class="hand-rank-display"></div>
-        <div class="score-container">
-            <h2>Score: <span id="score">0</span></h2>
-        </div>
-        <button id="draw-button" class="draw-button">Draw Hand</button>
+    <div class="main-content-wrapper">
+        <div class="container">
+            <h1>Poker Hand Scorer</h1>
+            <div id="hand-container" class="hand-container"></div>
+            <div id="hand-rank-display" class="hand-rank-display"></div>
+            <div class="score-container">
+                <h2>Score: <span id="score">0</span></h2>
+            </div>
+            <button id="draw-button" class="draw-button">Draw Hand</button>
 
-        <div class="hand-rankings-guide">
-            <h2>Poker Hand Rankings</h2>
-            <ul id="rankings-list">
-                <!-- Rankings will be populated by JavaScript -->
-            </ul>
+            <div class="hand-rankings-guide">
+                <h2>Poker Hand Rankings</h2>
+                <ul id="rankings-list">
+                    <!-- Rankings will be populated by JavaScript -->
+                </ul>
+            </div>
+        </div>
+        <div id="history-log-container" class="history-log-container">
+            <h2>Hand History</h2>
+            <div id="history-list"></div>
         </div>
     </div>
     <script src="main.js" type="module"></script>

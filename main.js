@@ -4,6 +4,7 @@ const handRankDisplay = document.getElementById('hand-rank-display');
 const scoreDisplay = document.getElementById('score');
 const drawButton = document.getElementById('draw-button');
 const rankingsList = document.getElementById('rankings-list'); // New: Get the rankings list element
+const historyList = document.getElementById('history-list');
 
 // Game state
 let score = 0;
@@ -125,7 +126,7 @@ function displayHand(hand) {
 }
 
 function populateRankingsList() {
-    rankingsList.innerHTML = ''; // Clear existing list
+    rankingsList.innerHTML = ''; 
     for (const ranking of pokerHandRankings) {
         const listItem = document.createElement('li');
         const rankingText = document.createElement('span');
@@ -135,13 +136,12 @@ function populateRankingsList() {
         if (ranking.example) {
             const exampleContainer = document.createElement('div');
             exampleContainer.classList.add('ranking-example-cards');
-            // Parse the example string (e.g., "A♠ K♠ Q♠ J♠ 10♠")
             const exampleCards = ranking.example.match(/([2-9]|10|[JQKA])([♥♦♣♠])/g);
             if (exampleCards) {
                 for (const cardStr of exampleCards) {
                     const rank = cardStr.slice(0, -1);
                     const suit = cardStr.slice(-1);
-                    exampleContainer.appendChild(createCardElement(rank, suit, true)); // Pass true for small cards
+                    exampleContainer.appendChild(createCardElement(rank, suit, true)); 
                 }
             }
             listItem.appendChild(exampleContainer);
@@ -149,6 +149,26 @@ function populateRankingsList() {
         rankingsList.appendChild(listItem);
     }
 }
+
+function addHandToHistory(hand, rank, scoreGained) {
+    const historyItem = document.createElement('div');
+    historyItem.classList.add('history-item');
+
+    const cardsContainer = document.createElement('div');
+    cardsContainer.classList.add('history-item-cards');
+    for (const card of hand) {
+        cardsContainer.appendChild(createCardElement(card.rank, card.suit, true)); // Reuse createCardElement for history cards, make them small
+    }
+    historyItem.appendChild(cardsContainer);
+
+    const handInfo = document.createElement('div');
+    handInfo.classList.add('history-hand-info');
+    handInfo.textContent = `Rank: ${rank} | Score: +${scoreGained}`;
+    historyItem.appendChild(handInfo);
+
+    historyList.prepend(historyItem); // Add to the top of the list
+}
+
 
 function handleDraw() {
     const deck = createDeck();
@@ -160,6 +180,8 @@ function handleDraw() {
     handRankDisplay.textContent = `Hand: ${result.rank}`;
     score += result.score;
     scoreDisplay.textContent = score;
+
+    addHandToHistory(hand, result.rank, result.score); // Add hand to history
 }
 
 
