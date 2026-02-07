@@ -1,10 +1,12 @@
 :root {
-    --primary-color: #4a90e2;
-    --secondary-color: #50e3c2;
+    --card-width: 80px;
+    --card-height: 120px;
     --background-color: #f0f2f5;
     --text-color: #333;
     --white: #fff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --red-card: #d9534f;
+    --black-card: #333;
 }
 
 body {
@@ -17,36 +19,74 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-17c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm58-33c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM22 42c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM2 9c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z" fill="%23000" fill-opacity="0.05" fill-rule="evenodd"/%3E%3C/svg%3E');
 }
 
 .container {
     background-color: var(--white);
     border-radius: 15px;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 0 10px 30px var(--shadow-color);
     text-align: center;
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
 }
 
 h1 {
-    color: var(--primary-color);
-    margin-bottom: 30px;
-    font-size: 2.5em;
-    font-weight: bold;
+    color: #4a90e2;
+    margin-bottom: 20px;
 }
 
-.lotto-numbers-container {
+.hand-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-bottom: 40px;
+    gap: 10px;
+    margin: 30px 0;
     flex-wrap: wrap;
 }
 
-.generate-button {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+.card {
+    width: var(--card-width);
+    height: var(--card-height);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    background-color: var(--white);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card.red {
+    color: var(--red-card);
+}
+
+.hand-rank-display {
+    margin: 20px 0;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    min-height: 25px;
+}
+
+.score-container h2 {
+    font-size: 1.5em;
+    color: #555;
+}
+
+#score {
+    color: #4a90e2;
+    font-weight: bold;
+}
+
+.draw-button {
+    background: linear-gradient(45deg, #5cb85c, #5bc0de);
     color: var(--white);
     border: none;
     border-radius: 50px;
@@ -58,18 +98,12 @@ h1 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.generate-button:hover, .generate-button:focus {
+.draw-button:hover, .draw-button:focus {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     outline: none;
 }
 
-.generate-button:active {
+.draw-button:active {
     transform: translateY(-1px);
-}
-
-lotto-ball {
-    --ball-size: 60px;
-    width: var(--ball-size);
-    height: var(--ball-size);
 }

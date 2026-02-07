@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>Poker Hand Scorer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Lotto Number Generator</h1>
-        <div id="lotto-numbers-container" class="lotto-numbers-container"></div>
-        <button id="generate-button" class="generate-button">Generate Numbers</button>
+        <h1>Poker Hand Scorer</h1>
+        <div id="hand-container" class="hand-container"></div>
+        <div id="hand-rank-display" class="hand-rank-display"></div>
+        <div class="score-container">
+            <h2>Score: <span id="score">0</span></h2>
+        </div>
+        <button id="draw-button" class="draw-button">Draw Hand</button>
     </div>
     <script src="main.js" type="module"></script>
 </body>
