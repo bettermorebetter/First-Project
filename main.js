@@ -3,6 +3,7 @@ const handContainer = document.getElementById('hand-container');
 const handRankDisplay = document.getElementById('hand-rank-display');
 const scoreDisplay = document.getElementById('score');
 const drawButton = document.getElementById('draw-button');
+const rankingsList = document.getElementById('rankings-list'); // New: Get the rankings list element
 
 // Game state
 let score = 0;
@@ -10,6 +11,20 @@ let score = 0;
 // Card constants
 const suits = ['♥', '♦', '♣', '♠'];
 const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+// Poker Hand Rankings and Scores (for display)
+const pokerHandRankings = [
+    { name: "Royal Flush", score: 200 },
+    { name: "Straight Flush", score: 100 },
+    { name: "Four of a Kind", score: 120 },
+    { name: "Full House", score: 80 },
+    { name: "Flush", score: 50 },
+    { name: "Straight", score: 40 },
+    { name: "Three of a Kind", score: 30 },
+    { name: "Two Pair", score: 20 },
+    { name: "One Pair", score: 10 },
+    { name: "High Card", score: 0 }
+];
 
 // --- Core Game Logic ---
 
@@ -58,12 +73,18 @@ function evaluateHand(hand) {
     const isAceLowStraight = JSON.stringify(handRanks) === JSON.stringify([2, 3, 4, 5, 14]);
     if (isAceLowStraight) {
         // For straight calculation, treat Ace as 1
-        const aceLowRanks = [1, 2, 3, 4, 5];
-        if (isFlush) return { rank: "Straight Flush", score: 100 }; // Ace-low straight flush
+        // Note: The score for Ace-low straight flush might differ from regular straight flush
+        // For simplicity, we'll assign the same score for now.
+        if (isFlush) return { rank: "Straight Flush", score: 100 }; 
         return { rank: "Straight", score: 40 };
     }
 
-    if (isStraight && isFlush) return { rank: "Royal Flush", score: 200 };
+    if (isStraight && isFlush) {
+        // Check for Royal Flush (10, J, Q, K, A of same suit)
+        const isRoyalFlush = handRanks[0] === getRankValue('10') && handRanks[4] === getRankValue('A');
+        if (isRoyalFlush) return { rank: "Royal Flush", score: 200 };
+        return { rank: "Straight Flush", score: 100 };
+    }
     if (isStraight) return { rank: "Straight", score: 40 };
     if (isFlush) return { rank: "Flush", score: 50 };
 
@@ -99,6 +120,15 @@ function displayHand(hand) {
     }
 }
 
+function populateRankingsList() {
+    rankingsList.innerHTML = ''; // Clear existing list
+    for (const ranking of pokerHandRankings) {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${ranking.name}: ${ranking.score} points`;
+        rankingsList.appendChild(listItem);
+    }
+}
+
 function handleDraw() {
     const deck = createDeck();
     shuffleDeck(deck);
@@ -115,5 +145,6 @@ function handleDraw() {
 // --- Event Listeners ---
 drawButton.addEventListener('click', handleDraw);
 
-// Initial draw on page load
+// Initial setup on page load
+populateRankingsList(); // New: Populate the rankings list
 handleDraw();
