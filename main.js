@@ -14,16 +14,16 @@ const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
 // Poker Hand Rankings and Scores (for display)
 const pokerHandRankings = [
-    { name: "Royal Flush", score: 200 },
-    { name: "Straight Flush", score: 100 },
-    { name: "Four of a Kind", score: 120 },
-    { name: "Full House", score: 80 },
-    { name: "Flush", score: 50 },
-    { name: "Straight", score: 40 },
-    { name: "Three of a Kind", score: 30 },
-    { name: "Two Pair", score: 20 },
-    { name: "One Pair", score: 10 },
-    { name: "High Card", score: 0 }
+    { name: "Royal Flush", score: 200, example: "A♠ K♠ Q♠ J♠ 10♠" },
+    { name: "Straight Flush", score: 100, example: "9♥ 8♥ 7♥ 6♥ 5♥" },
+    { name: "Four of a Kind", score: 120, example: "A♦ A♥ A♣ A♠ K♠" },
+    { name: "Full House", score: 80, example: "K♦ K♥ K♣ Q♠ Q♥" },
+    { name: "Flush", score: 50, example: "A♣ 10♣ 7♣ 4♣ 2♣" },
+    { name: "Straight", score: 40, example: "5♦ 4♥ 3♣ 2♠ A♦" }, // Ace-low straight example
+    { name: "Three of a Kind", score: 30, example: "J♦ J♥ J♣ 7♠ 2♥" },
+    { name: "Two Pair", score: 20, example: "10♦ 10♥ 5♣ 5♠ 8♥" },
+    { name: "One Pair", score: 10, example: "Q♦ Q♥ 9♣ 6♠ 3♥" },
+    { name: "High Card", score: 0, example: "A♦ 10♥ 7♣ 5♠ 2♥" }
 ];
 
 // --- Core Game Logic ---
@@ -72,9 +72,6 @@ function evaluateHand(hand) {
     // Ace-low straight (A-2-3-4-5)
     const isAceLowStraight = JSON.stringify(handRanks) === JSON.stringify([2, 3, 4, 5, 14]);
     if (isAceLowStraight) {
-        // For straight calculation, treat Ace as 1
-        // Note: The score for Ace-low straight flush might differ from regular straight flush
-        // For simplicity, we'll assign the same score for now.
         if (isFlush) return { rank: "Straight Flush", score: 100 }; 
         return { rank: "Straight", score: 40 };
     }
@@ -106,17 +103,24 @@ function evaluateHand(hand) {
 
 
 // --- UI Interaction ---
+// Helper function to create a card element
+function createCardElement(rank, suit, isSmall = false) {
+    const cardElement = document.createElement('div');
+    cardElement.classList.add('card');
+    if (isSmall) {
+        cardElement.classList.add('small-card'); // Add a class for smaller cards
+    }
+    cardElement.textContent = `${rank}${suit}`;
+    if (suit === '♥' || suit === '♦') {
+        cardElement.classList.add('red');
+    }
+    return cardElement;
+}
 
 function displayHand(hand) {
     handContainer.innerHTML = '';
     for (const card of hand) {
-        const cardElement = document.createElement('div');
-        cardElement.classList.add('card');
-        cardElement.textContent = `${card.rank}${card.suit}`;
-        if (card.suit === '♥' || card.suit === '♦') {
-            cardElement.classList.add('red');
-        }
-        handContainer.appendChild(cardElement);
+        handContainer.appendChild(createCardElement(card.rank, card.suit));
     }
 }
 
@@ -124,7 +128,24 @@ function populateRankingsList() {
     rankingsList.innerHTML = ''; // Clear existing list
     for (const ranking of pokerHandRankings) {
         const listItem = document.createElement('li');
-        listItem.textContent = `${ranking.name}: ${ranking.score} points`;
+        const rankingText = document.createElement('span');
+        rankingText.textContent = `${ranking.name}: ${ranking.score} points`;
+        listItem.appendChild(rankingText);
+
+        if (ranking.example) {
+            const exampleContainer = document.createElement('div');
+            exampleContainer.classList.add('ranking-example-cards');
+            // Parse the example string (e.g., "A♠ K♠ Q♠ J♠ 10♠")
+            const exampleCards = ranking.example.match(/([2-9]|10|[JQKA])([♥♦♣♠])/g);
+            if (exampleCards) {
+                for (const cardStr of exampleCards) {
+                    const rank = cardStr.slice(0, -1);
+                    const suit = cardStr.slice(-1);
+                    exampleContainer.appendChild(createCardElement(rank, suit, true)); // Pass true for small cards
+                }
+            }
+            listItem.appendChild(exampleContainer);
+        }
         rankingsList.appendChild(listItem);
     }
 }
@@ -146,5 +167,5 @@ function handleDraw() {
 drawButton.addEventListener('click', handleDraw);
 
 // Initial setup on page load
-populateRankingsList(); // New: Populate the rankings list
+populateRankingsList(); 
 handleDraw();

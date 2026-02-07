@@ -133,8 +133,27 @@ h1 {
 #rankings-list li {
     padding: 5px 0;
     border-bottom: 1px dotted #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 #rankings-list li:last-child {
     border-bottom: none;
+}
+
+.ranking-example-cards {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.small-card {
+    width: 40px;
+    height: 60px;
+    font-size: 0.8em;
+    border-radius: 4px;
+    box-shadow: none;
+    border: 1px solid #ddd;
 }
