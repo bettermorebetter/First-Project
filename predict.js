@@ -1,5 +1,5 @@
 // The link to your model provided by Teachable Machine export panel
-const URL = "https://teachablemachine.withgoogle.com/models/MODEL_ID/"; // IMPORTANT: Replace MODEL_ID with your actual model ID
+const URL = "https://teachablemachine.withgoogle.com/models/qWlZWbar9/"; // IMPORTANT: Replace MODEL_ID with your actual model ID
 
 let model, labelContainer;
 let isModelLoaded = false;
